@@ -3,8 +3,14 @@ package com.joutvhu.dynamic.r2dbc.query;
 import com.joutvhu.dynamic.r2dbc.DynamicQuery;
 import freemarker.template.Template;
 import org.springframework.data.jpa.repository.query.*;
+import org.springframework.data.r2dbc.convert.R2dbcConverter;
+import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
+import org.springframework.data.r2dbc.core.ReactiveDataAccessStrategy;
+import org.springframework.data.r2dbc.repository.query.AbstractR2dbcQuery;
+import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.query.*;
 import org.springframework.data.util.Lazy;
+import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.lang.Nullable;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
@@ -15,15 +21,20 @@ import javax.persistence.Tuple;
 import java.util.Map;
 
 /**
- * {@link RepositoryQuery} implementation that inspects a {@link DynamicJpaQueryMethod}
+ * {@link RepositoryQuery} implementation that inspects a {@link DynamicR2dbcQueryMethod}
  * for the existence of an {@link DynamicQuery} annotation and creates a JPA {@link DynamicQuery} from it.
  *
  * @author Giao Ho
  * @since 2.x.1
  */
-public class DynamicJpaRepositoryQuery extends AbstractJpaQuery {
+public class DynamicR2dbcRepositoryQuery extends AbstractR2dbcQuery {
     private static final SpelExpressionParser PARSER = new SpelExpressionParser();
-    private final DynamicJpaQueryMethod method;
+    private final DynamicR2dbcQueryMethod method;
+    private final NamedQueries namedQueries;
+    private final R2dbcEntityOperations entityOperations;
+    private final R2dbcConverter converter;
+    private final ReactiveDataAccessStrategy dataAccessStrategy;
+    private final ExpressionParser expressionParser;
     private final QueryMethodEvaluationContextProvider evaluationContextProvider;
     private final DynamicQueryMetadataCache metadataCache = new DynamicQueryMetadataCache();
 
@@ -32,18 +43,23 @@ public class DynamicJpaRepositoryQuery extends AbstractJpaQuery {
     private DynamicBasedStringQuery countQuery;
     private Lazy<ParameterBinder> parameterBinder;
 
-    /**
-     * Creates a new {@link DynamicJpaRepositoryQuery} from the given {@link AbstractJpaQuery}.
-     *
-     * @param method                    DynamicJpaQueryMethod
-     * @param em                        EntityManager
-     * @param evaluationContextProvider QueryMethodEvaluationContextProvider
-     */
-    public DynamicJpaRepositoryQuery(DynamicJpaQueryMethod method, EntityManager em,
-                                     QueryMethodEvaluationContextProvider evaluationContextProvider) {
-        super(method, em);
+    public DynamicR2dbcRepositoryQuery(
+            DynamicR2dbcQueryMethod method,
+            NamedQueries namedQueries,
+            R2dbcEntityOperations entityOperations,
+            R2dbcConverter converter,
+            ReactiveDataAccessStrategy dataAccessStrategy,
+            ExpressionParser expressionParser,
+            ReactiveQueryMethodEvaluationContextProvider evaluationContextProvider
+    ) {
+        super(method, entityOperations, converter);
 
         this.method = method;
+        this.namedQueries = namedQueries;
+        this.entityOperations = entityOperations;
+        this.converter = converter;
+        this.dataAccessStrategy = dataAccessStrategy;
+        this.expressionParser = expressionParser;
         this.evaluationContextProvider = evaluationContextProvider;
     }
 
@@ -122,7 +138,7 @@ public class DynamicJpaRepositoryQuery extends AbstractJpaQuery {
     }
 
     /**
-     * Creates an appropriate JPA query from an {@link EntityManager} according to the current {@link DynamicJpaRepositoryQuery}
+     * Creates an appropriate JPA query from an {@link EntityManager} according to the current {@link DynamicR2dbcRepositoryQuery}
      * type.
      *
      * @param queryString  is query

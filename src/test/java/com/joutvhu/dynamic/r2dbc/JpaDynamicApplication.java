@@ -1,6 +1,6 @@
 package com.joutvhu.dynamic.r2dbc;
 
-import com.joutvhu.dynamic.r2dbc.support.DynamicJpaRepositoryFactoryBean;
+import com.joutvhu.dynamic.r2dbc.support.DynamicR2dbcRepositoryFactoryBean;
 import org.hibernate.cfg.AvailableSettings;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -25,11 +26,9 @@ import java.util.Properties;
 
 @SpringBootApplication
 @EnableTransactionManagement
-@EnableJpaRepositories(
-        basePackages = {"com.joutvhu.dynamic.jpa.repository"},
-        entityManagerFactoryRef = "entityManagerFactory",
-        transactionManagerRef = "transactionManager",
-        repositoryFactoryBeanClass = DynamicJpaRepositoryFactoryBean.class
+@EnableR2dbcRepositories(
+        basePackages = {"com.joutvhu.dynamic.r2dbc.repository"},
+        repositoryFactoryBeanClass = DynamicR2dbcRepositoryFactoryBean.class
 )
 public class JpaDynamicApplication {
     public static void main(String[] args) {

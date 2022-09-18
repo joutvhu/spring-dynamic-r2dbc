@@ -10,7 +10,11 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.jpa.provider.QueryExtractor;
 import org.springframework.data.jpa.repository.query.JpaQueryMethod;
+import org.springframework.data.mapping.context.MappingContext;
 import org.springframework.data.projection.ProjectionFactory;
+import org.springframework.data.r2dbc.repository.query.R2dbcQueryMethod;
+import org.springframework.data.relational.core.mapping.RelationalPersistentEntity;
+import org.springframework.data.relational.core.mapping.RelationalPersistentProperty;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.util.Lazy;
 import org.springframework.lang.Nullable;
@@ -28,7 +32,7 @@ import java.util.Map;
  * @author Giao Ho
  * @since 2.x.1
  */
-public class DynamicJpaQueryMethod extends JpaQueryMethod {
+public class DynamicR2dbcQueryMethod extends R2dbcQueryMethod {
     private static final Map<String, String> templateMap = new HashMap<>();
     private static Configuration cfg = TemplateConfiguration.instanceWithDefault().configuration();
 
@@ -45,16 +49,13 @@ public class DynamicJpaQueryMethod extends JpaQueryMethod {
         templateMap.put("countProjection", "projection");
     }
 
-    /**
-     * Creates a {@link JpaQueryMethod}.
-     *
-     * @param method    must not be {@literal null}
-     * @param metadata  must not be {@literal null}
-     * @param factory   must not be {@literal null}
-     * @param extractor must not be {@literal null}
-     */
-    protected DynamicJpaQueryMethod(Method method, RepositoryMetadata metadata, ProjectionFactory factory, QueryExtractor extractor) {
-        super(method, metadata, factory, extractor);
+    protected DynamicR2dbcQueryMethod(
+            Method method,
+            RepositoryMetadata metadata,
+            ProjectionFactory projectionFactory,
+            MappingContext<? extends RelationalPersistentEntity<?>, ? extends RelationalPersistentProperty> mappingContext
+    ) {
+        super(method, metadata, projectionFactory, mappingContext);
         this.method = method;
         this.isNativeQuery = Lazy
                 .of(() -> getMergedOrDefaultAnnotationValue("nativeQuery", DynamicQuery.class, Boolean.class));

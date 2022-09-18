@@ -106,7 +106,7 @@ artifacts {
 test {
     useJUnitPlatform()
     filter {
-        includeTestsMatching 'com.joutvhu.dynamic.jpa.*'
+        includeTestsMatching 'com.joutvhu.dynamic.r2dbc.*'
     }
 }
 
@@ -121,11 +121,11 @@ publishing {
             pom {
                 name = project.name
                 description = 'Easier to implement dynamic queries with JpaRepository'
-                url = 'https://github.com/joutvhu/spring-dynamic-jpa'
+                url = 'https://github.com/joutvhu/spring-dynamic-r2dbc'
                 licenses {
                     license {
                         name = 'MIT License'
-                        url = 'https://github.com/joutvhu/spring-dynamic-jpa/blob/master/LICENSE'
+                        url = 'https://github.com/joutvhu/spring-dynamic-r2dbc/blob/master/LICENSE'
                     }
                 }
                 developers {
@@ -136,13 +136,13 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:git@github.com:joutvhu/spring-dynamic-jpa.git'
-                    developerConnection = 'scm:git:git@github.com:joutvhu/spring-dynamic-jpa.git'
-                    url = 'https://github.com/joutvhu/spring-dynamic-jpa'
+                    connection = 'scm:git:git@github.com:joutvhu/spring-dynamic-r2dbc.git'
+                    developerConnection = 'scm:git:git@github.com:joutvhu/spring-dynamic-r2dbc.git'
+                    url = 'https://github.com/joutvhu/spring-dynamic-r2dbc'
                 }
                 issueManagement {
                     system = 'Github Issue'
-                    url = 'https://github.com/joutvhu/spring-dynamic-jpa/issues'
+                    url = 'https://github.com/joutvhu/spring-dynamic-r2dbc/issues'
                 }
                 organization {
                     name = 'Giao Ho'
@@ -170,16 +170,16 @@ publishing {
                 url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
             }
             credentials {
-//                username = project.ossrhUsername
-//                password = project.ossrhPassword
+                username = project.ossrhUsername
+                password = project.ossrhPassword
             }
         }
         maven {
             name = 'github'
-            url = "https://maven.pkg.github.com/joutvhu/spring-dynamic-jpa"
+            url = "https://maven.pkg.github.com/joutvhu/spring-dynamic-r2dbc"
             credentials {
-//                username = project.githubUsername
-//                password = project.githubPassword
+                username = project.githubUsername
+                password = project.githubPassword
             }
         }
     }
