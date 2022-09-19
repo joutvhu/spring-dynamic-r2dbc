@@ -28,7 +28,6 @@ import java.util.Map;
  * @since 2.x.1
  */
 public class DynamicR2dbcRepositoryQuery extends AbstractR2dbcQuery {
-    private static final SpelExpressionParser PARSER = new SpelExpressionParser();
     private final DynamicR2dbcQueryMethod method;
     private final NamedQueries namedQueries;
     private final R2dbcEntityOperations entityOperations;
