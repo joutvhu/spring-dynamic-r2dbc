@@ -52,7 +52,7 @@ public abstract class DynamicStringBasedR2dbcQuery extends AbstractR2dbcQuery {
         ExpressionDependencies expressionDependencies = createExpressionDependencies(expressionQuery);
         ExpressionEvaluatingParameterBinder binder = new ExpressionEvaluatingParameterBinder(expressionQuery, dataAccessStrategy);
         return getSpelEvaluator(accessor, expressionDependencies)
-                .map(evaluator -> new ExpandedQuery(expressionQuery, binder, dataAccessStrategy, accessor, evaluator));
+                .map(evaluator -> new ExpandedQuery(expressionQuery, binder, accessor, evaluator));
     }
 
     public ExpressionDependencies createExpressionDependencies(ExpressionQuery expressionQuery) {
@@ -84,7 +84,6 @@ public abstract class DynamicStringBasedR2dbcQuery extends AbstractR2dbcQuery {
 
     protected class ExpandedQuery implements PreparedOperation<String> {
         private final ExpressionQuery expressionQuery;
-        private final ExpressionEvaluatingParameterBinder binder;
         private final BindTargetRecorder recordedBindings;
         private final PreparedOperation<?> expanded;
         private final Map<String, Parameter> remainderByName;
@@ -93,12 +92,10 @@ public abstract class DynamicStringBasedR2dbcQuery extends AbstractR2dbcQuery {
         public ExpandedQuery(
                 ExpressionQuery expressionQuery,
                 ExpressionEvaluatingParameterBinder binder,
-                ReactiveDataAccessStrategy dataAccessStrategy,
                 RelationalParameterAccessor accessor,
                 R2dbcSpELExpressionEvaluator evaluator
         ) {
             this.expressionQuery = expressionQuery;
-            this.binder = binder;
             this.recordedBindings = new BindTargetRecorder();
             binder.bind(recordedBindings, accessor, evaluator);
 
@@ -127,7 +124,6 @@ public abstract class DynamicStringBasedR2dbcQuery extends AbstractR2dbcQuery {
 
         @Override
         public void bindTo(BindTarget target) {
-
             BindTargetBinder binder = new BindTargetBinder(target);
             expanded.bindTo(target);
 
@@ -148,7 +144,6 @@ public abstract class DynamicStringBasedR2dbcQuery extends AbstractR2dbcQuery {
 
     protected static class BindTargetRecorder implements BindTarget {
         final Map<Integer, Parameter> byIndex = new LinkedHashMap<>();
-
         final Map<String, Parameter> byName = new LinkedHashMap<>();
 
         @Override
@@ -157,7 +152,6 @@ public abstract class DynamicStringBasedR2dbcQuery extends AbstractR2dbcQuery {
         }
 
         private Parameter toParameter(Object value) {
-
             if (value instanceof SettableValue) {
                 return ((SettableValue) value).toParameter();
             }
