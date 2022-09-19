@@ -8,26 +8,22 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.data.jpa.provider.QueryExtractor;
-import org.springframework.data.jpa.repository.query.JpaQueryMethod;
 import org.springframework.data.mapping.context.MappingContext;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.r2dbc.repository.query.R2dbcQueryMethod;
 import org.springframework.data.relational.core.mapping.RelationalPersistentEntity;
 import org.springframework.data.relational.core.mapping.RelationalPersistentProperty;
 import org.springframework.data.repository.core.RepositoryMetadata;
-import org.springframework.data.util.Lazy;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * JPA specific extension of {@link JpaQueryMethod}.
+ * JPA specific extension of {@link R2dbcQueryMethod}.
  *
  * @author Giao Ho
  * @since 2.x.1
@@ -37,11 +33,9 @@ public class DynamicR2dbcQueryMethod extends R2dbcQueryMethod {
     private static Configuration cfg = TemplateConfiguration.instanceWithDefault().configuration();
 
     private final Method method;
-    private final Lazy<Boolean> isNativeQuery;
+    private final DynamicQuery query;
 
     private Template queryTemplate;
-    private Template countQueryTemplate;
-    private Template countProjectionTemplate;
 
     static {
         templateMap.put("value", "");
@@ -57,8 +51,7 @@ public class DynamicR2dbcQueryMethod extends R2dbcQueryMethod {
     ) {
         super(method, metadata, projectionFactory, mappingContext);
         this.method = method;
-        this.isNativeQuery = Lazy
-                .of(() -> getMergedOrDefaultAnnotationValue("nativeQuery", DynamicQuery.class, Boolean.class));
+        this.query = AnnotatedElementUtils.findMergedAnnotation(method, DynamicQuery.class);
     }
 
     protected Template findTemplate(String name) {
@@ -84,29 +77,11 @@ public class DynamicR2dbcQueryMethod extends R2dbcQueryMethod {
         return queryTemplate;
     }
 
-    public boolean isNativeQuery() {
-        return this.isNativeQuery.get();
-    }
-
     @Nullable
     public Template getQueryTemplate() {
         if (queryTemplate == null)
             queryTemplate = getTemplate("value");
         return queryTemplate;
-    }
-
-    @Nullable
-    public Template getCountQueryTemplate() {
-        if (countQueryTemplate == null)
-            countQueryTemplate = getTemplate("countQuery");
-        return countQueryTemplate;
-    }
-
-    @Nullable
-    public Template getCountProjectionTemplate() {
-        if (countProjectionTemplate == null)
-            countProjectionTemplate = getTemplate("countProjection");
-        return countProjectionTemplate;
     }
 
     private String getEntityName() {
@@ -119,9 +94,8 @@ public class DynamicR2dbcQueryMethod extends R2dbcQueryMethod {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private <T> T getMergedOrDefaultAnnotationValue(String attribute, Class annotationType, Class<T> targetType) {
-        Annotation annotation = AnnotatedElementUtils.findMergedAnnotation(method, annotationType);
-        if (annotation == null)
+        if (this.query == null)
             return targetType.cast(AnnotationUtils.getDefaultValue(annotationType, attribute));
-        return targetType.cast(AnnotationUtils.getValue(annotation, attribute));
+        return targetType.cast(AnnotationUtils.getValue(this.query, attribute));
     }
 }
