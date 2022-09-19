@@ -8,7 +8,6 @@ import org.springframework.data.r2dbc.core.ReactiveDataAccessStrategy;
 import org.springframework.data.r2dbc.repository.query.DynamicR2dbcParameterAccessor;
 import org.springframework.data.r2dbc.repository.query.DynamicStringBasedR2dbcQuery;
 import org.springframework.data.relational.repository.query.RelationalParameterAccessor;
-import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.query.ReactiveQueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.expression.ExpressionParser;
@@ -30,7 +29,6 @@ public class DynamicR2dbcRepositoryQuery extends DynamicStringBasedR2dbcQuery {
 
     public DynamicR2dbcRepositoryQuery(
             DynamicR2dbcQueryMethod method,
-            NamedQueries namedQueries,
             R2dbcEntityOperations entityOperations,
             R2dbcConverter converter,
             ReactiveDataAccessStrategy dataAccessStrategy,

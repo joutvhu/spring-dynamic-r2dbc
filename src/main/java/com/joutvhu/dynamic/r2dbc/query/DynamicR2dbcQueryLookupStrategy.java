@@ -52,7 +52,6 @@ public class DynamicR2dbcQueryLookupStrategy implements QueryLookupStrategy {
             DynamicR2dbcQueryMethod queryMethod = new DynamicR2dbcQueryMethod(method, metadata, factory, this.converter.getMappingContext());
             return new DynamicR2dbcRepositoryQuery(
                     queryMethod,
-                    namedQueries,
                     this.entityOperations,
                     this.converter,
                     this.dataAccessStrategy,
