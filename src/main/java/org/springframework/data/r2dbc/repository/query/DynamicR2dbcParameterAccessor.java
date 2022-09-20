@@ -18,7 +18,7 @@ public class DynamicR2dbcParameterAccessor extends R2dbcParameterAccessor {
 
     public static DynamicR2dbcParameterAccessor of(R2dbcQueryMethod method, RelationalParameterAccessor accessor) {
         assert (accessor instanceof RelationalParametersParameterAccessor);
-        return new DynamicR2dbcParameterAccessor(method, (R2dbcParameterAccessor) accessor);
+        return new DynamicR2dbcParameterAccessor(method, (RelationalParametersParameterAccessor) accessor);
     }
 
     /**
@@ -38,8 +38,13 @@ public class DynamicR2dbcParameterAccessor extends R2dbcParameterAccessor {
         Object[] values = accessor.getValues();
         parameters.forEach(parameter -> {
             Object value = values[parameter.getIndex()];
-            if (value != null && !(value instanceof TypedParameterValue) && parameter.isBindable()) {
-                result.put(parameter.getName().orElse(null), value);
+            if (value != null && parameter.isBindable()) {
+                String key = parameter.getName().orElse(String.valueOf(parameter.getIndex()));
+                if (value instanceof TypedParameterValue) {
+                    result.put(key, ((TypedParameterValue) value).getValue());
+                } else {
+                    result.put(key, value);
+                }
             }
         });
         return result;

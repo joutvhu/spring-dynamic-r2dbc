@@ -5,28 +5,27 @@ import com.joutvhu.dynamic.r2dbc.entity.TableA;
 import com.joutvhu.dynamic.r2dbc.model.TableAB;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 public interface TableARepository extends R2dbcRepository<TableA, Long> {
-    @DynamicQuery(value = "select t from TableA t where t.fieldB = :fieldB\n" +
+    @DynamicQuery(value = "select * from Table_A t where t.field_B = :fieldB\n" +
             "<#if fieldC?has_content>\n" +
-            "  and t.fieldC = :fieldC\n" +
+            "  and t.field_C = :fieldC\n" +
             "</#if>"
     )
-    List<TableA> findA1(Long fieldB, String fieldC);
+    Flux<TableA> findA1(Long fieldB, String fieldC);
 
-    @Query(value = "select t from TableA t where t.fieldA = :fieldA and t.fieldC = :fieldC")
-    List<TableA> findA2(Long fieldA, String fieldC);
+    @Query(value = "select * from Table_A t where t.field_A = :fieldA and t.field_C = :fieldC")
+    Flux<TableA> findA2(Long fieldA, String fieldC);
 
-    @DynamicQuery(value = "select new com.joutvhu.dynamic.jpa.model.TableAB(a, b) from TableA a inner join TableB b\n" +
-            "on a.fieldA = b.fieldA\n" +
+    @DynamicQuery(value = "select * from Table_A a inner join Table_B b\n" +
+            "on a.field_A = b.field_A\n" +
             "<#if fieldB??>\n" +
-            "  and a.fieldB = :fieldB\n" +
+            "  and a.field_B = :fieldB\n" +
             "</#if>" +
             "<#if fieldD??>\n" +
-            "  and b.fieldD = :fieldD\n" +
+            "  and b.field_D = :fieldD\n" +
             "</#if>"
     )
-    List<TableAB> findJ(Long fieldB, Long fieldD);
+    Flux<TableAB> findJ(Long fieldB, Long fieldD);
 }

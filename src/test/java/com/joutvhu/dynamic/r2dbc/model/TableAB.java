@@ -1,22 +1,22 @@
 package com.joutvhu.dynamic.r2dbc.model;
 
-import com.joutvhu.dynamic.r2dbc.entity.TableA;
-import com.joutvhu.dynamic.r2dbc.entity.TableB;
+import org.springframework.data.relational.core.mapping.Column;
 
 public class TableAB {
+    @Column("FIELD_A")
     private Long fieldA;
-    private Long fieldB;
-    private String fieldC;
-    private Long fieldD;
-    private String fieldE;
 
-    public TableAB(TableA a, TableB b) {
-        fieldA = a.getFieldA();
-        fieldB = a.getFieldB();
-        fieldC = a.getFieldC();
-        fieldD = b.getFieldD();
-        fieldE = b.getFieldE();
-    }
+    @Column("FIELD_B")
+    private Long fieldB;
+
+    @Column("FIELD_C")
+    private String fieldC;
+
+    @Column("FIELD_D")
+    private Long fieldD;
+
+    @Column("FIELD_E")
+    private String fieldE;
 
     public Long getFieldA() {
         return fieldA;

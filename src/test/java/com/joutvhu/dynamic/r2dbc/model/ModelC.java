@@ -1,9 +1,16 @@
 package com.joutvhu.dynamic.r2dbc.model;
 
+import org.springframework.data.relational.core.mapping.Column;
+
 public class ModelC {
+    @Column("FIELD_E")
     private Long fieldA;
 
+    @Column("FIELD_C")
     private String fieldC;
+
+    public ModelC() {
+    }
 
     public ModelC(Long fieldA, String fieldC) {
         this.fieldA = fieldA;

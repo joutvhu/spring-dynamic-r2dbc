@@ -1,21 +1,19 @@
 package com.joutvhu.dynamic.r2dbc.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Entity
-@Table(name = "TABLE_B")
+@Table("TABLE_B")
 public class TableB {
     @Id
-    @Column(name = "FIELD_A")
+    @Column("FIELD_A")
     private Long fieldA;
 
-    @Column(name = "FIELD_D")
+    @Column("FIELD_D")
     private Long fieldD;
 
-    @Column(name = "FIELD_E")
+    @Column("FIELD_E")
     private String fieldE;
 
     public Long getFieldA() {

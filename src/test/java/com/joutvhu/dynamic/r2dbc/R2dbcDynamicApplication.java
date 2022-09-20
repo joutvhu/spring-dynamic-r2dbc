@@ -17,29 +17,22 @@ import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-@EnableTransactionManagement
 @EnableR2dbcRepositories(
         basePackages = {"com.joutvhu.dynamic.r2dbc.repository"},
+
         repositoryFactoryBeanClass = DynamicR2dbcRepositoryFactoryBean.class
 )
-public class JpaDynamicApplication {
+public class R2dbcDynamicApplication {
     public static void main(String[] args) {
-        SpringApplication.run(JpaDynamicApplication.class);
+        SpringApplication.run(R2dbcDynamicApplication.class);
     }
 
     @Bean
-    @ConfigurationProperties("spring.r2dbc")
-    public DataSourceProperties dataSourceProperties() {
-        return new DataSourceProperties();
-    }
-
-    @Bean
-    public ConnectionFactory connectionFactory(DataSourceProperties dataSourceProperties) {
+    public ConnectionFactory connectionFactory() {
         return new H2ConnectionFactory(
                 H2ConnectionConfiguration.builder()
-                        .url(dataSourceProperties.getUrl())
-                        .username(dataSourceProperties.getUsername())
-                        .password(dataSourceProperties.getPassword())
+                        .url("mem:testdb;DB_CLOSE_DELAY=-1;")
+                        .username("sa")
                         .build()
         );
     }
@@ -50,7 +43,7 @@ public class JpaDynamicApplication {
         initializer.setConnectionFactory(connectionFactory);
 
         CompositeDatabasePopulator populator = new CompositeDatabasePopulator();
-        populator.addPopulators(new ResourceDatabasePopulator(new ClassPathResource("table.sql")));
+        populator.addPopulators(new ResourceDatabasePopulator(new ClassPathResource("sql/table.sql")));
         initializer.setDatabasePopulator(populator);
 
         return initializer;

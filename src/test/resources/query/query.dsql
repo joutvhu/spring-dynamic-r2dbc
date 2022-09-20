@@ -1,19 +1,13 @@
 --TableB:findB1
-select t from TableB t
+select * from Table_B t
 <#if fieldE?has_content && fieldE?starts_with("H")>
-  where t.fieldE = :fieldE
+  where t.field_E = :fieldE
 </#if>
 
 --TableB:findB2
-select t from TableB t
+select * from Table_B t
 <#if maxD??>
-  where t.fieldD < :maxD
-</#if>
-
---TableB:findB3
-select t from TableB t
-<#if maxD??>
-  where t.fieldD < :maxD
+  where t.field_D < :maxD
 </#if>
 
 --TableB:sumB1
