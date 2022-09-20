@@ -102,7 +102,6 @@ public abstract class DynamicStringBasedR2dbcQuery extends AbstractR2dbcQuery {
             remainderByName = new LinkedHashMap<>(recordedBindings.byName);
             remainderByIndex = new LinkedHashMap<>(recordedBindings.byIndex);
             expanded = dataAccessStrategy.processNamedParameters(expressionQuery.getQuery(), (index, name) -> {
-
                 if (recordedBindings.byName.containsKey(name)) {
                     remainderByName.remove(name);
                     return SettableValue.fromParameter(recordedBindings.byName.get(name));

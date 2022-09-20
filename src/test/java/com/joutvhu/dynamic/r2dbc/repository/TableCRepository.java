@@ -17,7 +17,7 @@ public interface TableCRepository extends ReactiveSortingRepository<TableC, Long
             "       and i.field_B like concat('%',:fieldB,'%')\n" +
             "   </#if>\n" +
             "   <#if fieldCs??>\n" +
-            "       and i.field_C in :fieldCs\n" +
+            "       and i.field_C in (:fieldCs)\n" +
             "   </#if>\n" +
             "</@where>")
     Flux<TableC> search(Long fieldA, String fieldB, List<Long> fieldCs);

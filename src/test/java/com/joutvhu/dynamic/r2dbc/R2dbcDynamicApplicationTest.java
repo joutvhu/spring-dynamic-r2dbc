@@ -146,6 +146,14 @@ public class R2dbcDynamicApplicationTest {
     }
 
     @Test
+    public void findB3() {
+        tableBRepository.findB3("GSDRB")
+                .as(StepVerifier::create)
+                .expectNextCount(5)
+                .verifyComplete();
+    }
+
+    @Test
     public void sumB1() {
         tableBRepository.sumB1(40000000L)
                 .as(StepVerifier::create)
