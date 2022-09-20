@@ -16,12 +16,6 @@ select t from TableB t
   where t.fieldD < :maxD
 </#if>
 
---TableB:findB3.count
-select count(t) from TableB t
-<#if maxD??>
-  where t.fieldD < :maxD
-</#if>
-
 --TableB:sumB1
 select sum(FIELD_D) from TABLE_B
 <#if maxD??>

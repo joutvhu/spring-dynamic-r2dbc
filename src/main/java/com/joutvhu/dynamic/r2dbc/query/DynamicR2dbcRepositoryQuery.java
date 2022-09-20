@@ -22,7 +22,7 @@ import java.util.Map;
  * for the existence of an {@link DynamicQuery} annotation and creates a JPA {@link DynamicQuery} from it.
  *
  * @author Giao Ho
- * @since 2.x.1
+ * @since 1.5.0
  */
 public class DynamicR2dbcRepositoryQuery extends DynamicStringBasedR2dbcQuery {
     private final DynamicR2dbcQueryMethod method;

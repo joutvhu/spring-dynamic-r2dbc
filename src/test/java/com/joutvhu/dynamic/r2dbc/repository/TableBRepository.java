@@ -5,11 +5,11 @@ import com.joutvhu.dynamic.r2dbc.entity.TableB;
 import com.joutvhu.dynamic.r2dbc.model.ModelC;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 import java.util.List;
 
-public interface TableBRepository extends JpaRepository<TableB, Long> {
+public interface TableBRepository extends ReactiveCrudRepository<TableB, Long> {
     @DynamicQuery
     List<TableB> findB1(String fieldE);
 
@@ -19,7 +19,7 @@ public interface TableBRepository extends JpaRepository<TableB, Long> {
     @DynamicQuery
     Page<TableB> findB3(Long maxD, Pageable pageable);
 
-    @DynamicQuery(nativeQuery = true)
+    @DynamicQuery()
     Long sumB1(Long maxD);
 
     @DynamicQuery("select t from TableB t\n" +

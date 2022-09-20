@@ -3,12 +3,12 @@ package com.joutvhu.dynamic.r2dbc.repository;
 import com.joutvhu.dynamic.r2dbc.DynamicQuery;
 import com.joutvhu.dynamic.r2dbc.entity.TableA;
 import com.joutvhu.dynamic.r2dbc.model.TableAB;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 
 import java.util.List;
 
-public interface TableARepository extends JpaRepository<TableA, Long> {
+public interface TableARepository extends R2dbcRepository<TableA, Long> {
     @DynamicQuery(value = "select t from TableA t where t.fieldB = :fieldB\n" +
             "<#if fieldC?has_content>\n" +
             "  and t.fieldC = :fieldC\n" +

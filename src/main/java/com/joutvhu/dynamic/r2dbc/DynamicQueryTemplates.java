@@ -20,7 +20,7 @@ import java.io.IOException;
  * DynamicQueryTemplates
  *
  * @author Giao Ho
- * @since 2.x.1
+ * @since 1.5.0
  */
 @Log4j2
 @NoArgsConstructor

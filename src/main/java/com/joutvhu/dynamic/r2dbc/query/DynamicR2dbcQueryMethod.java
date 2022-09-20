@@ -26,7 +26,7 @@ import java.util.Map;
  * JPA specific extension of {@link R2dbcQueryMethod}.
  *
  * @author Giao Ho
- * @since 2.x.1
+ * @since 1.5.0
  */
 public class DynamicR2dbcQueryMethod extends R2dbcQueryMethod {
     private static final Map<String, String> templateMap = new HashMap<>();

@@ -17,6 +17,7 @@ import java.util.Optional;
  * JPA specific generic repository factory.
  *
  * @author Giao Ho
+ * @since 1.5.0
  */
 public class DynamicR2dbcRepositoryFactory extends R2dbcRepositoryFactory {
     private final ReactiveDataAccessStrategy dataAccessStrategy;

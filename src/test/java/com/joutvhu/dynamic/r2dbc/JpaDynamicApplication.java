@@ -1,28 +1,20 @@
 package com.joutvhu.dynamic.r2dbc;
 
 import com.joutvhu.dynamic.r2dbc.support.DynamicR2dbcRepositoryFactoryBean;
-import org.hibernate.cfg.AvailableSettings;
-import org.springframework.beans.factory.annotation.Qualifier;
+import io.r2dbc.h2.H2ConnectionConfiguration;
+import io.r2dbc.h2.H2ConnectionFactory;
+import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
-import org.springframework.jdbc.datasource.init.DataSourceInitializer;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.JpaVendorAdapter;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.Database;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.r2dbc.connection.init.CompositeDatabasePopulator;
+import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer;
+import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-import java.nio.charset.StandardCharsets;
-import java.util.Properties;
 
 @SpringBootApplication
 @EnableTransactionManagement
@@ -36,46 +28,31 @@ public class JpaDynamicApplication {
     }
 
     @Bean
-    public JpaVendorAdapter jpaVendorAdapter() {
-        HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
-        jpaVendorAdapter.setDatabase(Database.DERBY);
-        jpaVendorAdapter.setGenerateDdl(true);
-        return jpaVendorAdapter;
+    @ConfigurationProperties("spring.r2dbc")
+    public DataSourceProperties dataSourceProperties() {
+        return new DataSourceProperties();
     }
 
-    @Primary
-    @Bean(name = "entityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
-        Properties properties = new Properties();
-        properties.setProperty(AvailableSettings.DIALECT, "org.hibernate.dialect.H2Dialect");
-
-        LocalContainerEntityManagerFactoryBean managerFactory = new LocalContainerEntityManagerFactoryBean();
-        managerFactory.setDataSource(dataSource);
-        managerFactory.setJpaVendorAdapter(jpaVendorAdapter());
-        managerFactory.setPackagesToScan("com.joutvhu.dynamic.jpa.entity");
-
-        managerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        managerFactory.setJpaProperties(properties);
-
-        return managerFactory;
+    @Bean
+    public ConnectionFactory connectionFactory(DataSourceProperties dataSourceProperties) {
+        return new H2ConnectionFactory(
+                H2ConnectionConfiguration.builder()
+                        .url(dataSourceProperties.getUrl())
+                        .username(dataSourceProperties.getUsername())
+                        .password(dataSourceProperties.getPassword())
+                        .build()
+        );
     }
 
-    @Primary
-    @Bean(name = "transactionManager")
-    public JpaTransactionManager transactionManager(@Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
-        return new JpaTransactionManager(entityManagerFactory);
-    }
+    @Bean
+    public ConnectionFactoryInitializer initializer(ConnectionFactory connectionFactory) {
+        ConnectionFactoryInitializer initializer = new ConnectionFactoryInitializer();
+        initializer.setConnectionFactory(connectionFactory);
 
-    @Bean(name = "dataSourceInitializer")
-    public DataSourceInitializer emdDataSourceInitializer(DataSource dataSource) {
-        DataSourceInitializer initializer = new DataSourceInitializer();
-        initializer.setDataSource(dataSource);
-        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.addScript(new ClassPathResource("sql/table.sql"));
-        populator.setSqlScriptEncoding(StandardCharsets.UTF_8.name());
+        CompositeDatabasePopulator populator = new CompositeDatabasePopulator();
+        populator.addPopulators(new ResourceDatabasePopulator(new ClassPathResource("table.sql")));
         initializer.setDatabasePopulator(populator);
-        initializer.setEnabled(true);
-        initializer.afterPropertiesSet();
+
         return initializer;
     }
 

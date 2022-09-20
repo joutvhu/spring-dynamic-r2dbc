@@ -17,6 +17,7 @@ import java.io.Serializable;
  * repository factories via Spring configuration.
  *
  * @author Giao Ho
+ * @since 1.5.0
  */
 public class DynamicR2dbcRepositoryFactoryBean<T extends Repository<S, ID>, S, ID extends Serializable> extends R2dbcRepositoryFactoryBean<T, S, ID> {
     /**

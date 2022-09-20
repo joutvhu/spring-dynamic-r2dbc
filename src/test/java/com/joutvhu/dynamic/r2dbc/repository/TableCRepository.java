@@ -4,11 +4,11 @@ import com.joutvhu.dynamic.r2dbc.DynamicQuery;
 import com.joutvhu.dynamic.r2dbc.entity.TableC;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 
 import java.util.List;
 
-public interface TableCRepository extends JpaRepository<TableC, Long> {
+public interface TableCRepository extends ReactiveSortingRepository<TableC, Long> {
     @DynamicQuery("select i from TableC i\n" +
             "<@where>\n" +
             "   <#if fieldA??>\n" +

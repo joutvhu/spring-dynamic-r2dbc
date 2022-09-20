@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
  * {@link QueryLookupStrategy} that tries to detect a dynamic query declared via {@link DynamicQuery} annotation.
  *
  * @author Giao Ho
- * @since 2.x.1
+ * @since 1.5.0
  */
 public class DynamicR2dbcQueryLookupStrategy implements QueryLookupStrategy {
     private static final SpelExpressionParser EXPRESSION_PARSER = new SpelExpressionParser();
