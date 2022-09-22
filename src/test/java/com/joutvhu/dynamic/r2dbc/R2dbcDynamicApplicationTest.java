@@ -141,15 +141,7 @@ public class R2dbcDynamicApplicationTest {
     public void findB2P() {
         tableBRepository.findB2(50000000L)
                 .as(StepVerifier::create)
-                .expectNextCount(2)
-                .verifyComplete();
-    }
-
-    @Test
-    public void findB3() {
-        tableBRepository.findB3("GSDRB")
-                .as(StepVerifier::create)
-                .expectNextCount(5)
+                .expectNextCount(4)
                 .verifyComplete();
     }
 
