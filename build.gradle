@@ -29,6 +29,7 @@ ext {
     versions = [
             'spring-boot.version'           : '2.7.0',
             'spring-framework.version'      : '5.3.20',
+            'spring-data-r2dbc.version'     : '1.5.0',
             'spring-dynamic-commons.version': '1.0.0',
             'freemarker.version'            : '2.3.31',
             'commons-lang3.version'         : '3.12.0'
@@ -39,6 +40,7 @@ ext {
             'org.springframework:spring-jcl'              : 'spring-framework.version',
             'org.springframework:spring-context-support'  : 'spring-framework.version',
             'org.springframework.data:spring-data-commons': 'spring-boot.version',
+            'org.springframework.data:spring-data-r2dbc'  : 'spring-data-r2dbc.version',
             'com.github.joutvhu:spring-dynamic-commons'   : 'spring-dynamic-commons.version',
             'org.freemarker:freemarker'                   : 'freemarker.version',
             'org.apache.commons:commons-lang3'            : 'commons-lang3.version'
@@ -57,18 +59,12 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation 'org.springframework:spring-aspects'
-    implementation 'org.springframework:spring-context'
-    implementation 'org.springframework:spring-jcl'
     implementation 'org.springframework:spring-context-support'
 
-    implementation 'org.springframework.data:spring-data-r2dbc:1.5.0'
+    implementation 'org.springframework.data:spring-data-r2dbc'
     implementation 'org.springframework.data:spring-data-commons'
 
     implementation 'com.github.joutvhu:spring-dynamic-commons'
-
-    implementation 'org.freemarker:freemarker'
-    implementation 'org.apache.commons:commons-lang3'
 
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
@@ -177,9 +173,21 @@ publishing {
                     name = 'Giao Ho'
                     url = 'https://github.com/joutvhu'
                 }
+                properties = project.ext.versions
                 withXml {
-                    def dependenciesNode = asNode().appendNode('dependencies')
+                    def dependencyManagement = asNode().get('dependencyManagement')
+                    dependencyManagement.dependencies.dependency.each {
+                        def key = "${it.groupId.text()}:${it.artifactId.text()}"
+                        def versionProperty = project.ext.managedVersions[key]
+                        if (versionProperty == null) {
+                            versionProperty = project.ext.otherVersions[key]
+                        }
+                        if (versionProperty) {
+                            it.version[0].setValue("\${$versionProperty}")
+                        }
+                    }
 
+                    def dependenciesNode = asNode().appendNode('dependencies')
                     configurations.implementation.allDependencies.each {
                         def dependencyNode = dependenciesNode.appendNode('dependency')
                         dependencyNode.appendNode('groupId', it.group)
