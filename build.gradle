@@ -145,7 +145,7 @@ publishing {
 
             pom {
                 name = project.name
-                description = 'Easier to implement dynamic queries with JpaRepository'
+                description = 'The Spring Dynamic R2dbc will make it easy to implement dynamic queries with R2dbc'
                 url = 'https://github.com/joutvhu/spring-dynamic-r2dbc'
                 licenses {
                     license {
