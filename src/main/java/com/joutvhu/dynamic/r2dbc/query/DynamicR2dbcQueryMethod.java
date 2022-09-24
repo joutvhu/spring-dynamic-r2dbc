@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * JPA specific extension of {@link R2dbcQueryMethod}.
+ * Reactive specific implementation of {@link R2dbcQueryMethod}.
  *
  * @author Giao Ho
  * @since 1.5.0

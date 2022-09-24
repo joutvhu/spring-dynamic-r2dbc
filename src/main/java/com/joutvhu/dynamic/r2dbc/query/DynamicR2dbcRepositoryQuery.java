@@ -19,7 +19,7 @@ import java.util.Map;
 
 /**
  * {@link RepositoryQuery} implementation that inspects a {@link DynamicR2dbcQueryMethod}
- * for the existence of an {@link DynamicQuery} annotation and creates a JPA {@link DynamicQuery} from it.
+ * for the existence of an {@link DynamicQuery} annotation and creates a R2dbc {@link DynamicQuery} from it.
  *
  * @author Giao Ho
  * @since 1.5.0

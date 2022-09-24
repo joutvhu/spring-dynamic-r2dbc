@@ -5,6 +5,7 @@ import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.r2dbc.core.ReactiveDataAccessStrategy;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.r2dbc.repository.support.R2dbcRepositoryFactory;
 import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
@@ -14,7 +15,7 @@ import org.springframework.r2dbc.core.DatabaseClient;
 import java.util.Optional;
 
 /**
- * JPA specific generic repository factory.
+ * Factory to create {@link R2dbcRepository} instances.
  *
  * @author Giao Ho
  * @since 1.5.0
