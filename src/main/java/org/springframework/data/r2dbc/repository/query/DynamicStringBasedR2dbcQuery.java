@@ -125,9 +125,7 @@ public abstract class DynamicStringBasedR2dbcQuery extends AbstractR2dbcQuery {
         public void bindTo(BindTarget target) {
             BindTargetBinder binder = new BindTargetBinder(target);
             expanded.bindTo(target);
-
             remainderByName.forEach(binder::bind);
-            remainderByIndex.forEach(binder::bind);
         }
 
         @Override
