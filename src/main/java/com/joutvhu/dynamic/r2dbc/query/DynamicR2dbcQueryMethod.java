@@ -1,9 +1,9 @@
 package com.joutvhu.dynamic.r2dbc.query;
 
+import com.joutvhu.dynamic.commons.DynamicQueryTemplates;
+import com.joutvhu.dynamic.commons.util.ApplicationContextHolder;
+import com.joutvhu.dynamic.commons.util.TemplateConfiguration;
 import com.joutvhu.dynamic.r2dbc.DynamicQuery;
-import com.joutvhu.dynamic.r2dbc.DynamicQueryTemplates;
-import com.joutvhu.dynamic.r2dbc.util.ApplicationContextHolder;
-import com.joutvhu.dynamic.r2dbc.util.TemplateConfiguration;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.springframework.core.annotation.AnnotatedElementUtils;

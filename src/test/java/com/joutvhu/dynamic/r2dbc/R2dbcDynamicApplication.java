@@ -1,5 +1,6 @@
 package com.joutvhu.dynamic.r2dbc;
 
+import com.joutvhu.dynamic.commons.DynamicQueryTemplates;
 import com.joutvhu.dynamic.r2dbc.support.DynamicR2dbcRepositoryFactoryBean;
 import io.r2dbc.h2.H2ConnectionConfiguration;
 import io.r2dbc.h2.H2ConnectionFactory;

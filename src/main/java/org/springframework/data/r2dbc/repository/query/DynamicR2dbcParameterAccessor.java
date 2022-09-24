@@ -1,6 +1,5 @@
 package org.springframework.data.r2dbc.repository.query;
 
-import org.hibernate.jpa.TypedParameterValue;
 import org.springframework.data.relational.repository.query.RelationalParameterAccessor;
 import org.springframework.data.relational.repository.query.RelationalParametersParameterAccessor;
 import org.springframework.data.repository.query.Parameters;
@@ -40,11 +39,7 @@ public class DynamicR2dbcParameterAccessor extends R2dbcParameterAccessor {
             Object value = values[parameter.getIndex()];
             if (value != null && parameter.isBindable()) {
                 String key = parameter.getName().orElse(String.valueOf(parameter.getIndex()));
-                if (value instanceof TypedParameterValue) {
-                    result.put(key, ((TypedParameterValue) value).getValue());
-                } else {
-                    result.put(key, value);
-                }
+                result.put(key, value);
             }
         });
         return result;

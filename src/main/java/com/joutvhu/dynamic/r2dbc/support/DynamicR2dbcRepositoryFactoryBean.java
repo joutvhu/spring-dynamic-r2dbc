@@ -1,6 +1,6 @@
 package com.joutvhu.dynamic.r2dbc.support;
 
-import com.joutvhu.dynamic.r2dbc.util.ApplicationContextHolder;
+import com.joutvhu.dynamic.commons.util.ApplicationContextHolder;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
