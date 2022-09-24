@@ -3,7 +3,6 @@ package org.springframework.data.r2dbc.repository.query;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.core.ReactiveDataAccessStrategy;
-import org.springframework.data.r2dbc.dialect.BindTargetBinder;
 import org.springframework.data.r2dbc.mapping.SettableValue;
 import org.springframework.data.relational.repository.query.RelationalParameterAccessor;
 import org.springframework.data.repository.query.ReactiveQueryMethodEvaluationContextProvider;
@@ -123,9 +122,8 @@ public abstract class DynamicStringBasedR2dbcQuery extends AbstractR2dbcQuery {
 
         @Override
         public void bindTo(BindTarget target) {
-            BindTargetBinder binder = new BindTargetBinder(target);
             expanded.bindTo(target);
-            remainderByName.forEach(binder::bind);
+            remainderByName.forEach(target::bind);
         }
 
         @Override

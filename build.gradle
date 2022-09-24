@@ -5,12 +5,12 @@ plugins {
     id 'signing'
     id 'java-library'
     id 'maven-publish'
-    id 'org.springframework.boot' version '2.7.0'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'org.springframework.boot' version '2.6.0'
+    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
 }
 
 group = 'com.github.joutvhu'
-version = '1.5.0'
+version = '1.4.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -27,9 +27,9 @@ repositories {
 
 ext {
     versions = [
-            'spring-boot.version'           : '2.7.0',
-            'spring-framework.version'      : '5.3.20',
-            'spring-data-r2dbc.version'     : '1.5.0',
+            'spring-boot.version'           : '2.6.0',
+            'spring-framework.version'      : '5.3.13',
+            'spring-data-r2dbc.version'     : '1.4.0',
             'spring-dynamic-commons.version': '1.0.0',
             'freemarker.version'            : '2.3.31',
             'commons-lang3.version'         : '3.12.0'
@@ -145,7 +145,7 @@ publishing {
 
             pom {
                 name = project.name
-                description = 'The Spring Dynamic R2dbc will make it easy to implement dynamic queries with R2dbc'
+                description = 'The Spring Dynamic R2DBC will make it easy to implement dynamic queries with R2DBC'
                 url = 'https://github.com/joutvhu/spring-dynamic-r2dbc'
                 licenses {
                     license {
