@@ -106,7 +106,7 @@ select USER_ID from USER
 - If you don't specify the query template inside the `@DynamicQuery` annotation, `DynamicR2dbcRepositoryQuery` will find it from the external query files.
 
 ```java
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends ReactiveCrudRepository<User, Long> {
     @DynamicQuery
     Flux<User> findUserByNames(Long firstName, String lastName);
 
