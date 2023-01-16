@@ -1,7 +1,7 @@
 package com.joutvhu.dynamic.r2dbc.query;
 
+import com.joutvhu.dynamic.commons.DynamicQueryTemplate;
 import com.joutvhu.dynamic.r2dbc.DynamicQuery;
-import freemarker.template.Template;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.core.ReactiveDataAccessStrategy;
@@ -12,7 +12,6 @@ import org.springframework.data.repository.query.ReactiveQueryMethodEvaluationCo
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.r2dbc.core.PreparedOperation;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -60,12 +59,11 @@ public class DynamicR2dbcRepositoryQuery extends DynamicStringBasedR2dbcQuery {
         return super.createQuery(queryString, accessor);
     }
 
-    protected String buildQuery(Template template, RelationalParameterAccessor accessor) {
+    protected String buildQuery(DynamicQueryTemplate template, RelationalParameterAccessor accessor) {
         try {
             if (template != null) {
                 Map<String, Object> model = DynamicR2dbcParameterAccessor.of(method, accessor).getParamModel();
-                String queryString = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
-                queryString = queryString
+                String queryString = template.process(model)
                         .replaceAll("\n", " ")
                         .replaceAll("\t", " ")
                         .replaceAll(" +", " ")
