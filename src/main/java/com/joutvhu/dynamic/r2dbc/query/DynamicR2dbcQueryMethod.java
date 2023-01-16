@@ -1,11 +1,9 @@
 package com.joutvhu.dynamic.r2dbc.query;
 
-import com.joutvhu.dynamic.commons.DynamicQueryTemplates;
+import com.joutvhu.dynamic.commons.DynamicQueryTemplate;
+import com.joutvhu.dynamic.commons.DynamicQueryTemplateProvider;
 import com.joutvhu.dynamic.commons.util.ApplicationContextHolder;
-import com.joutvhu.dynamic.commons.util.TemplateConfiguration;
 import com.joutvhu.dynamic.r2dbc.DynamicQuery;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.mapping.context.MappingContext;
@@ -17,7 +15,6 @@ import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,12 +27,12 @@ import java.util.Map;
  */
 public class DynamicR2dbcQueryMethod extends R2dbcQueryMethod {
     private static final Map<String, String> templateMap = new HashMap<>();
-    private static Configuration cfg = TemplateConfiguration.instanceWithDefault().configuration();
 
     private final Method method;
     private final DynamicQuery query;
 
-    private Template queryTemplate;
+    private DynamicQueryTemplateProvider queryTemplateProvider;
+    private DynamicQueryTemplate queryTemplate;
 
     static {
         templateMap.put("value", "");
@@ -54,21 +51,23 @@ public class DynamicR2dbcQueryMethod extends R2dbcQueryMethod {
         this.query = AnnotatedElementUtils.findMergedAnnotation(method, DynamicQuery.class);
     }
 
-    protected Template findTemplate(String name) {
-        DynamicQueryTemplates queryTemplates = ApplicationContextHolder.getBean(DynamicQueryTemplates.class);
-        return queryTemplates != null ? queryTemplates.findTemplate(name) : null;
+    public DynamicQueryTemplateProvider getTemplateProvider() {
+        if (queryTemplateProvider == null)
+            queryTemplateProvider = ApplicationContextHolder.getBean(DynamicQueryTemplateProvider.class);
+        return queryTemplateProvider;
     }
 
-    protected Template createTemplate(String name, String content) {
-        try {
-            return new Template(name, content, cfg);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    protected DynamicQueryTemplate findTemplate(String name) {
+        DynamicQueryTemplateProvider provider = getTemplateProvider();
+        return provider != null ? provider.findTemplate(name) : null;
     }
 
-    protected Template getTemplate(String name) {
+    protected DynamicQueryTemplate createTemplate(String name, String content) {
+        DynamicQueryTemplateProvider provider = getTemplateProvider();
+        return provider != null ? provider.createTemplate(name, content) : null;
+    }
+
+    protected DynamicQueryTemplate getTemplate(String name) {
         String templateName = templateMap.get(name);
         if (StringUtils.hasText(templateName)) templateName = "." + templateName;
         templateName = getTemplateKey() + templateName;
@@ -78,7 +77,7 @@ public class DynamicR2dbcQueryMethod extends R2dbcQueryMethod {
     }
 
     @Nullable
-    public Template getQueryTemplate() {
+    public DynamicQueryTemplate getQueryTemplate() {
         if (queryTemplate == null)
             queryTemplate = getTemplate("value");
         return queryTemplate;

@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'com.github.joutvhu'
-version = '1.5.0'
+version = '1.5.1'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -30,8 +30,7 @@ ext {
             'spring-boot.version'           : '2.7.0',
             'spring-framework.version'      : '5.3.20',
             'spring-data-r2dbc.version'     : '1.5.0',
-            'spring-dynamic-commons.version': '1.0.0',
-            'freemarker.version'            : '2.3.31',
+            'spring-dynamic-commons.version': '2.0.0',
             'commons-lang3.version'         : '3.12.0'
     ]
     managedVersions = [
@@ -42,7 +41,6 @@ ext {
             'org.springframework.data:spring-data-commons': 'spring-boot.version',
             'org.springframework.data:spring-data-r2dbc'  : 'spring-data-r2dbc.version',
             'com.github.joutvhu:spring-dynamic-commons'   : 'spring-dynamic-commons.version',
-            'org.freemarker:freemarker'                   : 'freemarker.version',
             'org.apache.commons:commons-lang3'            : 'commons-lang3.version'
     ]
     otherVersions = [
@@ -83,6 +81,7 @@ dependencies {
     testImplementation 'com.h2database:h2'
     testImplementation 'io.r2dbc:r2dbc-h2'
     testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'com.github.joutvhu:spring-dynamic-freemarker:1.0.0'
 
     testImplementation 'org.springframework:spring-context-support'
 
