@@ -4,29 +4,63 @@ The Spring Dynamic R2DBC will make it easy to implement dynamic queries with R2D
 
 ## How to use?
 
+### Install dependency
+
 - Add dependency
 
 ```groovy
-implementation 'com.github.joutvhu:spring-dynamic-r2dbc:1.5.0'
+implementation 'com.github.joutvhu:spring-dynamic-r2dbc:3.0.1'
 ```
 
 ```xml
 <dependency>
     <groupId>com.github.joutvhu</groupId>
     <artifactId>spring-dynamic-r2dbc</artifactId>
-    <version>1.5.0</version>
+    <version>3.0.1</version>
 </dependency>
 ```
 
-- Please choose the _spring-dynamic-r2dbc_ version appropriate with your spring version.
+- Please choose the _Spring Dynamic R2DBC_ version appropriate with your spring version.
 
-| spring-boot version | spring-dynamic-r2dbc version |
-|:----------:|:-------------:|
-| 2.6.x | 1.4.0 |
-| 2.7.x | 1.5.0 |
+  | Spring Boot version | Spring Dynamic R2DBC version |
+  |:----------:|:-------------:|
+  | 2.6.x | 1.4.1 |
+  | 2.7.x | 1.5.1 |
+  | 3.0.x | 3.0.1 |
 
+Also, you have to choose a [Dynamic Query Template Provider](https://github.com/joutvhu/spring-dynamic-commons#dynamic-query-template-provider) to use,
+the Dynamic Query Template Provider will decide the style you write dynamic query template.
 
-- To use the dynamic query, you need to set the r2dbc repository's `repositoryFactoryBeanClass` property to `DynamicR2dbcRepositoryFactoryBean.class`.
+In this document, I will use [Spring Dynamic Freemarker](https://github.com/joutvhu/spring-dynamic-freemarker).
+If you migrated from a lower version, you should use it.
+
+```groovy
+implementation 'com.github.joutvhu:spring-dynamic-freemarker:1.0.0'
+```
+
+```xml
+<dependency>
+    <groupId>com.github.joutvhu</groupId>
+    <artifactId>spring-dynamic-freemarker</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+### Configuration
+
+- First you need to create a bean of `DynamicQueryTemplateProvider`, that depending on which the Dynamic Query Template Provider you are using.
+
+```java
+@Bean
+public DynamicQueryTemplateProvider dynamicQueryTemplateProvider() {
+    FreemarkerQueryTemplateProvider provider = new FreemarkerQueryTemplateProvider();
+    provider.setTemplateLocation("classpath:/query");
+    provider.setSuffix(".dsql");
+    return provider;
+}
+```
+
+- Next, you need to set the r2dbc repository's `repositoryFactoryBeanClass` property to `DynamicR2dbcRepositoryFactoryBean.class`.
 
 ```java
 @EnableR2dbcRepositories(repositoryFactoryBeanClass = DynamicR2dbcRepositoryFactoryBean.class)
@@ -69,17 +103,10 @@ public interface UserRepository extends R2dbcRepository<User, Long> {
 
 ### Load query template files
 
-- You need to configure a `DynamicQueryTemplates` bean to be loadable external query templates.
+- If you do not specify the query template on the `@DynamicQuery` annotation.
+  The `DynamicQueryTemplateProvider` will find them from external template files based on the `TemplateLocation` and `Suffix` that you specify in the provider.
 
-```java
-@Bean
-public DynamicQueryTemplates dynamicQueryTemplates() {
-    DynamicQueryTemplates queryTemplates = new DynamicQueryTemplates();
-    queryTemplates.setTemplateLocation("classpath:/query");
-    queryTemplates.setSuffix(".dsql");
-    return queryTemplates;
-}
-```
+- If you don't want to load the template from external template files you can use the following code `provider.setSuffix(null);`.
 
 - Each template will start with a template name definition line. The template name definition line must be start with two dash characters (`--`). The template name will have the following syntax.
 
@@ -103,7 +130,7 @@ select USER_ID from USER
 </#if>
 ```
 
-- If you don't specify the query template inside the `@DynamicQuery` annotation, `DynamicR2dbcRepositoryQuery` will find it from the external query files.
+- Now you don't need to specify the query template on `@DynamicQuery` annotation.
 
 ```java
 public interface UserRepository extends ReactiveCrudRepository<User, Long> {
