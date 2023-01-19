@@ -1,6 +1,7 @@
 package com.joutvhu.dynamic.r2dbc;
 
-import com.joutvhu.dynamic.commons.DynamicQueryTemplates;
+import com.joutvhu.dynamic.commons.DynamicQueryTemplateProvider;
+import com.joutvhu.dynamic.freemarker.FreemarkerQueryTemplateProvider;
 import com.joutvhu.dynamic.r2dbc.support.DynamicR2dbcRepositoryFactoryBean;
 import io.r2dbc.h2.H2ConnectionConfiguration;
 import io.r2dbc.h2.H2ConnectionFactory;
@@ -47,8 +48,8 @@ public class R2dbcDynamicApplication {
     }
 
     @Bean
-    public DynamicQueryTemplates dynamicQueryTemplates() {
-        DynamicQueryTemplates queryTemplates = new DynamicQueryTemplates();
+    public DynamicQueryTemplateProvider dynamicQueryTemplates() {
+        DynamicQueryTemplateProvider queryTemplates = new FreemarkerQueryTemplateProvider();
         queryTemplates.setSuffix(".dsql");
         return queryTemplates;
     }

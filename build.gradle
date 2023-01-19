@@ -5,14 +5,14 @@ plugins {
     id 'signing'
     id 'java-library'
     id 'maven-publish'
-    id 'org.springframework.boot' version '2.7.0'
-    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+    id 'org.springframework.boot' version '3.0.0'
+    id 'io.spring.dependency-management' version '1.1.0'
 }
 
 group = 'com.github.joutvhu'
-version = '1.5.0'
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+version = '3.0.1'
+
+def snapshotVersion = version.endsWith('-SNAPSHOT') || version.endsWith('.SNAPSHOT')
 
 configurations {
     compileOnly {
@@ -27,12 +27,10 @@ repositories {
 
 ext {
     versions = [
-            'spring-boot.version'           : '2.7.0',
-            'spring-framework.version'      : '5.3.20',
-            'spring-data-r2dbc.version'     : '1.5.0',
-            'spring-dynamic-commons.version': '1.0.0',
-            'freemarker.version'            : '2.3.31',
-            'commons-lang3.version'         : '3.12.0'
+            'spring-boot.version'           : '3.0.0',
+            'spring-framework.version'      : '6.0.2',
+            'spring-data-r2dbc.version'     : '3.0.0',
+            'spring-dynamic-commons.version': '2.0.0'
     ]
     managedVersions = [
             'org.springframework:spring-aspects'          : 'spring-framework.version',
@@ -41,9 +39,7 @@ ext {
             'org.springframework:spring-context-support'  : 'spring-framework.version',
             'org.springframework.data:spring-data-commons': 'spring-boot.version',
             'org.springframework.data:spring-data-r2dbc'  : 'spring-data-r2dbc.version',
-            'com.github.joutvhu:spring-dynamic-commons'   : 'spring-dynamic-commons.version',
-            'org.freemarker:freemarker'                   : 'freemarker.version',
-            'org.apache.commons:commons-lang3'            : 'commons-lang3.version'
+            'com.github.joutvhu:spring-dynamic-commons'   : 'spring-dynamic-commons.version'
     ]
     otherVersions = [
             'org.springframework.boot:spring-boot-dependencies': 'spring-boot.version'
@@ -74,7 +70,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    testImplementation('org.springframework.boot:spring-boot-starter-test:2.7.0') {
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'junit', module: 'junit'
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         exclude group: 'org.apache.logging.log4j', module: 'log4j-api'
@@ -83,6 +79,7 @@ dependencies {
     testImplementation 'com.h2database:h2'
     testImplementation 'io.r2dbc:r2dbc-h2'
     testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'com.github.joutvhu:spring-dynamic-freemarker:1.0.0'
 
     testImplementation 'org.springframework:spring-context-support'
 
@@ -94,6 +91,11 @@ jar {
     enabled = true
     manifest {
         attributes 'Built-By': 'joutvhu (Giao Ho)'
+        attributes 'Build-Date': java.time.Instant.now().toString()
+        attributes 'Bundle-Name': 'Spring Dynamic R2DBC'
+        attributes 'Bundle-Vendor': project.group
+        attributes 'Bundle-SymbolicName': project.name
+        attributes 'Bundle-Version': project.version
     }
     into("META-INF/maven/${project.group}/${project.name}") {
         from {
@@ -192,7 +194,9 @@ publishing {
                         def dependencyNode = dependenciesNode.appendNode('dependency')
                         dependencyNode.appendNode('groupId', it.group)
                         dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
+                        if (it.version != null) {
+                            dependencyNode.appendNode('version', it.version)
+                        }
                     }
                 }
             }
@@ -201,7 +205,7 @@ publishing {
     repositories {
         maven {
             name = 'sonatype'
-            if (version.endsWith('-SNAPSHOT') || version.endsWith('.SNAPSHOT')) {
+            if (snapshotVersion) {
                 url = 'https://oss.sonatype.org/content/repositories/snapshots'
             } else {
                 url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
@@ -224,4 +228,8 @@ publishing {
 
 signing {
     sign publishing.publications.maven
+}
+
+tasks.publishMavenPublicationToGithubRepository.configure {
+    onlyIf { !snapshotVersion }
 }
