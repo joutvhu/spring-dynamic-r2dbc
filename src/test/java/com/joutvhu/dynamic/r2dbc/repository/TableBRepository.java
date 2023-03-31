@@ -6,6 +6,8 @@ import com.joutvhu.dynamic.r2dbc.model.ModelC;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 
+import java.util.List;
+
 public interface TableBRepository extends ReactiveCrudRepository<TableB, Long> {
     @DynamicQuery
     Flux<TableB> findB1(String fieldE);
@@ -21,4 +23,7 @@ public interface TableBRepository extends ReactiveCrudRepository<TableB, Long> {
             "  where t.field_E = :#{#modelC.fieldC}\n" +
             "</#if>")
     Flux<TableB> findB4(ModelC modelC);
+
+    @DynamicQuery(name = "findTableBByFieldD")
+    Flux<TableB> findB5(Long fieldD);
 }
