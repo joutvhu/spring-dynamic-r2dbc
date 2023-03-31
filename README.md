@@ -24,9 +24,9 @@ implementation 'com.github.joutvhu:spring-dynamic-r2dbc:3.0.1'
 
   | Spring Boot version | Spring Dynamic R2DBC version |
   |:----------:|:-------------:|
-  | 2.6.x | 1.4.1 |
-  | 2.7.x | 1.5.1 |
-  | 3.0.x | 3.0.1 |
+  | 2.6.x | 1.4.2 |
+  | 2.7.x | 1.5.2 |
+  | 3.0.x | 3.0.2 |
 
 Also, you have to choose a [Dynamic Query Template Provider](https://github.com/joutvhu/spring-dynamic-commons#dynamic-query-template-provider) to use,
 the Dynamic Query Template Provider will decide the style you write dynamic query template.
@@ -111,8 +111,10 @@ public interface UserRepository extends R2dbcRepository<User, Long> {
 - Each template will start with a template name definition line. The template name definition line must be start with two dash characters (`--`). The template name will have the following syntax.
 
   ```
-  entityName:methodName
+  queryMethodName
   ```
+
+  - `queryMethodName` can be provided through field `@DynamicQuery.name`. If `@DynamicQuery.name` is not provided, `queryMethodName` will be `entityName:methodName` where `entityName` is entity class name, `methodName` is query method name
 
 - Query templates (Ex: `resoucers/query/user-query.dsql`)
 
@@ -128,6 +130,17 @@ select USER_ID from USER
 <#if name??>
   where concat(FIRST_NAME, ' ', LAST_NAME) like %:name%
 </#if>
+
+-- get_user_by_username_and_email
+select * from USER
+<@where>
+  <#if username??>
+    and USERNAME = :username
+  </#if>
+  <#if email??>
+    and EMAIL = :email
+  </#if>
+</@where>
 ```
 
 - Now you don't need to specify the query template on `@DynamicQuery` annotation.
@@ -142,5 +155,8 @@ public interface UserRepository extends ReactiveCrudRepository<User, Long> {
 
     @DynamicQuery
     Flux<Long> searchIdsByName(String name);
+
+    @DynamicQuery(name = "get_user_by_username_and_email")
+    Flux<User> getUserWithUsernameAndEmail(String username, String email);
 }
 ```
