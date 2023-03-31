@@ -162,6 +162,14 @@ public class R2dbcDynamicApplicationTest {
     }
 
     @Test
+    public void findB5() {
+        tableBRepository.findB5(12042107L)
+                .as(StepVerifier::create)
+                .expectNextCount(1)
+                .verifyComplete();
+    }
+
+    @Test
     public void findC1() {
         List<Long> c = new ArrayList<>();
         c.add(101L);
