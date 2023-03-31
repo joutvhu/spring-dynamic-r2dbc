@@ -9,14 +9,14 @@ The Spring Dynamic R2DBC will make it easy to implement dynamic queries with R2D
 - Add dependency
 
 ```groovy
-implementation 'com.github.joutvhu:spring-dynamic-r2dbc:3.0.1'
+implementation 'com.github.joutvhu:spring-dynamic-r2dbc:3.0.2'
 ```
 
 ```xml
 <dependency>
     <groupId>com.github.joutvhu</groupId>
     <artifactId>spring-dynamic-r2dbc</artifactId>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
 </dependency>
 ```
 
